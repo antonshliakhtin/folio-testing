@@ -1,0 +1,124 @@
+{
+  "id": "${artifactId}-${version}",
+  "name": "Books",
+  "requires": [],
+  "provides": [
+    {
+      "id": "books",
+      "version": "1.0",
+      "handlers": [
+        {
+          "methods": ["GET"],
+          "pathPattern": "/books",
+          "permissionsRequired": ["books.collection.get"]
+        },
+        {
+          "methods": ["POST"],
+          "pathPattern": "/books",
+          "permissionsRequired": ["books.item.post"]
+        },
+        {
+          "methods": ["GET"],
+          "pathPattern": "/books/{id}",
+          "permissionsRequired": ["books.item.get"]
+        },
+        {
+          "methods": ["PUT"],
+          "pathPattern": "/books/{id}",
+          "permissionsRequired": ["books.item.put"]
+        },
+        {
+          "methods": ["DELETE"],
+          "pathPattern": "/books/{id}",
+          "permissionsRequired": ["books.item.delete"]
+        }
+      ]
+    },
+    {
+      "id": "_tenant",
+      "version": "1.0",
+      "interfaceType": "system",
+      "handlers": [
+        {
+          "methods": [
+            "POST"
+          ],
+          "pathPattern": "/_/tenant"
+        },
+        {
+          "methods": [
+            "DELETE"
+          ],
+          "pathPattern": "/_/tenant"
+        }
+      ]
+    }
+  ],
+  "permissionSets": [
+    {
+      "permissionName": "books.collection.get",
+      "displayName": "Books - get books collection",
+      "description": "Get books collection"
+    },
+    {
+      "permissionName": "books.item.get",
+      "displayName": "Books - get individual books from storage",
+      "description": "Get individual book"
+    },
+    {
+      "permissionName": "books.item.post",
+      "displayName": "Books - create book",
+      "description": "Create book"
+    },
+    {
+      "permissionName": "books.item.put",
+      "displayName": "Books - modify book",
+      "description": "Modify book"
+    },
+    {
+      "permissionName": "books.item.delete",
+      "displayName": "Books - delete book",
+      "description": "Delete book"
+    },
+    {
+      "permissionName": "books.all",
+      "displayName": "Books module - all permissions",
+      "description": "Entire set of permissions needed to use the books module",
+      "subPermissions": [
+        "books.collection.get",
+        "books.item.get",
+        "books.item.post",
+        "books.item.put",
+        "books.item.delete"
+      ],
+      "visible": false
+    }
+  ],
+  "metadata": {
+    "containerMemory": "256",
+    "databaseConnection": "true"
+  },
+  "launchDescriptor": {
+    "dockerImage": "${artifactId}:${version}",
+    "dockerPull": false,
+    "dockerArgs": {
+      "HostConfig": {
+        "Memory": 357913941,
+        "PortBindings": { "8081/tcp": [ { "HostPort": "%p" } ] }
+      }
+    },
+    "env": [
+      { "name": "JAVA_OPTIONS",
+        "value": "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      },
+      { "name": "DB_HOST", "value": "postgres" },
+      { "name": "DB_PORT", "value": "5432" },
+      { "name": "DB_USERNAME", "value": "folio_admin" },
+      { "name": "DB_PASSWORD", "value": "folio_admin" },
+      { "name": "DB_DATABASE", "value": "okapi_modules" },
+      { "name": "DB_QUERYTIMEOUT", "value": "60000" },
+      { "name": "DB_CHARSET", "value": "UTF-8" },
+      { "name": "DB_MAXPOOLSIZE", "value": "5" }
+    ]
+  }
+}

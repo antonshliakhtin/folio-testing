@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "A book",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique generated identifier for the note",
+      "pattern" : "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$",
+      "example": "62d00c36-a94f-434d-9cd2-c7ea159303da"
+    },
+    "title": {
+      "type": "string",
+      "description": "The title of the book",
+      "example": "Title"
+    },
+    "author": {
+      "type": "string",
+      "description": "The author of the book",
+      "example": "Anton Shliakhtin"
+    },
+    "year": {
+      "description": "The publishing date of books that we have",
+      "type": "string",
+      "example": "22.01.1998"
+    },
+    "metadata": {
+      "description": "Metadata about creation and changes, provided by the server (client should not provide)",
+      "type": "object",
+      "$ref": "../../raml-util/schemas/metadata.schema",
+      "readonly": true
+    }
+  },
+  "required": [
+    "title",
+    "author",
+    "year"
+  ]
+}

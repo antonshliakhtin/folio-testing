@@ -1,0 +1,213 @@
+#%RAML 1.0
+
+title: Books
+version: v0.1
+protocols: [ HTTP, HTTPS ]
+baseUri: http://localhost
+
+documentation:
+  - title: Books API
+    content: This documents the API calls that can be made to manage books
+
+types:
+  book: !include types/books/book.json
+  booksCollection: !include types/books/booksCollection.json
+  errors: !include raml-util/schemas/errors.schema
+
+traits:
+  validate: !include raml-util/traits/validation.raml
+  language: !include raml-util/traits/language.raml
+  pageable: !include raml-util/traits/pageable.raml
+  searchable: !include raml-util/traits/searchable.raml
+
+#resourceTypes:
+#  collection: !include raml-util/rtypes/collection.raml
+#  collection-item: !include raml-util/rtypes/item-collection.raml
+
+/books:
+  displayName: Books
+  description: Books collection
+
+  post:
+    body:
+      application/json:
+        type: book
+    responses:
+      200:
+        description: "Success"
+        body:
+          application/json:
+            example: |
+              {
+                "book":
+                  {
+                    "bookId": "550e8400-e29b-41d4-a716-446655440000",
+                    "title": "Java for education"
+                  }
+              }
+      201:
+        description: "Added"
+        headers:
+          Location:
+            description: URI to the created <<resourcePathName|!singularize>> item
+        body:
+          application/json:
+            example: |
+              {
+                "book":
+                  {
+                    "bookId": "550e8400-e29b-41d4-a716-446655440000",
+                    "title": "Java for education"
+                  }
+              }
+
+  get:
+    displayName: Books
+    description: Books that exists here
+    queryParameters:
+      title:
+        displayName: Title
+        type: string
+        description: The books title
+        example: Java for education
+        required: false
+      year:
+        displayName: Year
+        type: string
+        description: The year released for the first time
+        example: 22.01.1998
+        required: false
+      author:
+        displayName: Author
+        type: string
+        description: An author's full name
+        example: Anton Shliakhtin
+        required: false
+    responses:
+      200:
+        description: "Success"
+        body:
+          application/json:
+            example: |
+              {
+                "books": [
+                  {
+                    "bookId": "550e8400-e29b-41d4-a716-446655440000",
+                    "title": "Java for education"
+                  },
+                  {
+                    "bookId": "550e8400-e29b-41d4-a716-446655440111",
+                    "title": "Okapi for education"
+                  },
+                  {
+                    "bookId": "550e8400-e29b-41d4-a716-446655440222",
+                    "title": "Vert.X for education"
+                  }
+                ]
+              }
+      400:
+        description: "Bad request"
+        body:
+          application/json:
+            example: |
+              "unable to list booksCollection -- malformed parameter 'query', syntax error at column 99"
+
+  put:
+    queryParameters:
+      access_token:
+        displayName: Access Token
+        type: string
+        description: Token giving you permission to make call
+        required: true
+
+  delete:
+  /{id}:
+    description: Book entity
+    uriParameters:
+      id:
+        pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+
+    get:
+      description: Retrieve a specific book title `bookId = {bookId}`
+      responses:
+        200:
+          description: "Success"
+          body:
+            application/json:
+              example: |
+                {
+                  "data": {
+                    "bookId": "SmThId",
+                    "title": "Java for education",
+                    "author": "Anton Shliakhtin",
+                    "year": "22.01.1998"
+                  }
+                }
+        401:
+          description: "Not authorized to perform request action"
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "unable to list booksCollection -- unauthorized"
+                }
+        404:
+          description: "Item with a given ID not found"
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Book not found"
+                }
+        500:
+          description: "Item with a given ID not found"
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "item not found"
+                }
+
+    put:
+      queryParameters:
+        access_token:
+          displayName: Access Token
+          type: string
+          description: Token giving you permission to make call
+          required: true
+
+    delete:
+      queryParameters:
+        access_token:
+          displayName: Access Token
+          type: string
+          description: Token giving you permission to make call
+          required: true
+    /author:
+
+      get:
+    /title:
+
+      get:
+  /{bookTitle}:
+
+    get:
+
+    put:
+      queryParameters:
+        access_token:
+          displayName: Access Token
+          type: string
+          description: Token giving you permission to make call
+          required: true
+  /{authorName}:
+
+    get:
+
+    put:
+      queryParameters:
+        access_token:
+          displayName: Access Token
+          type: string
+          description: Token giving you permission to make call
+          required: true
