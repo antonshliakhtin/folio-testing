@@ -1,0 +1,17 @@
+{
+  "tables": [
+    {
+      "tableName": "books",
+      "withMetadata": true,
+      "pkColumnName": "bookId",
+      "generateId": false,
+      "withAuditing": false,
+      "uniqueIndex": [
+        {
+          "fieldName": "title",
+          "tOps": "ADD"
+        }
+      ]
+    }
+  ]
+}
