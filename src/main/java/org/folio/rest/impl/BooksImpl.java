@@ -7,12 +7,12 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import org.folio.book.BookService;
 import org.folio.common.OkapiParams;
 import org.folio.rest.ResponseHelper;
 import org.folio.rest.annotations.Validate;
 import org.folio.rest.jaxrs.model.Book;
 import org.folio.rest.jaxrs.resource.Books;
+import org.folio.service.BookService;
 import org.folio.spring.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,8 +38,11 @@ public class BooksImpl implements Books {
 
   @Override
   @Validate
-  public void getBooks(String title, String year, String author, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+  public void getBooks(String query, int offset, int limits, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
     log.debug("getBooks");
+    ResponseHelper.respond(bookService.getBooks(query, offset, limits, tenantId(okapiHeaders)),
+      GetBooksResponse::respond200WithApplicationJson, asyncResultHandler, null);
+    asyncResultHandler.handle(Future.succeededFuture(GetBooksResponse.status(Response.Status.NOT_IMPLEMENTED).build()));
   }
 
   @Override
@@ -51,6 +54,7 @@ public class BooksImpl implements Books {
       .compose(object -> bookService.addBook(book, new OkapiParams(okapiHeaders)))
       .map(handleSuccessfulPost())
       .setHandler(asyncResultHandler);
+    asyncResultHandler.handle(Future.succeededFuture(PostBooksResponse.status(Response.Status.NOT_IMPLEMENTED).build()));
   }
 
   @Override

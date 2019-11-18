@@ -1,4 +1,4 @@
-package org.folio.book;
+package org.folio.repository.book;
 
 import io.vertx.core.Future;
 import org.folio.rest.jaxrs.model.Book;

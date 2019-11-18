@@ -1,9 +1,10 @@
-package org.folio.book;
+package org.folio.service;
 
 import io.vertx.core.Future;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import org.folio.common.OkapiParams;
+import org.folio.repository.book.BookRepository;
 import org.folio.rest.jaxrs.model.Book;
 import org.folio.rest.jaxrs.model.BooksCollection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class BookServiceImpl implements BookService {
 
   @Override
   public Future<BooksCollection> getBooks(String query, int offset, int limit, String tenantId) {
-    return null;
+    return repository.getAll(query, offset, limit, tenantId);
   }
 
   @Override

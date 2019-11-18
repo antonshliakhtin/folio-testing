@@ -65,24 +65,47 @@ traits:
     displayName: Books
     description: Books that exists here
     queryParameters:
-      title:
-        displayName: Title
-        type: string
-        description: The books title
-        example: Java for education
+      query:
+        description: |
+          A query
+        example: |
+          (title="Jav*")
         required: false
-      year:
-        displayName: Year
         type: string
-        description: The year released for the first time
-        example: 22.01.1998
+      offset:
+        description: skip over a number of elements
+        type: integer
         required: false
-      author:
-        displayName: Author
-        type: string
-        description: An author's full name
-        example: Anton Shliakhtin
+        example: 0
+        default: 0
+        minimum: 0
+        maximum: 2147483647
+      limit:
+        description: limit the number of elements returned in the response
+        type: integer
         required: false
+        example: 10
+        default: 10
+        minimum: 0
+        maximum: 2147483647
+#      title:
+#        displayName: Title
+#        type: string
+#        description: The books title
+#        example: Java for education
+#        required: false
+#      year:
+#        displayName: Year
+#        type: string
+#        description: The year released for the first time
+#        example: 22.01.1998
+#        required: false
+#      author:
+#        displayName: Author
+#        type: string
+#        description: An author's full name
+#        example: Anton Shliakhtin
+#        required: false
     responses:
       200:
         description: "Success"

@@ -1,4 +1,4 @@
-package org.folio.book;
+package org.folio.repository.book;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -10,6 +10,8 @@ import org.folio.rest.jaxrs.model.Book;
 import org.folio.rest.jaxrs.model.BooksCollection;
 import org.folio.rest.persist.PostgresClient;
 import org.folio.rest.persist.interfaces.Results;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
@@ -17,11 +19,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Component
 public class BookRepositoryImpl implements BookRepository {
 
   private static final String BOOK_TABLE = "book_data";
-  private static final Vertx vertx = Vertx.vertx();
   private final Logger log = LoggerFactory.getLogger(BookRepositoryImpl.class);
+  private Vertx vertx;
+
+  @Autowired
+  public BookRepositoryImpl(Vertx vertx) {
+    this.vertx = vertx;
+  }
 
   @Override
   public Future<Book> save(Book book, String tenantId) {

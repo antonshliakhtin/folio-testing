@@ -20,7 +20,6 @@
     <junit.version>4.12</junit.version>
     <rest-assured.version>3.1.1</rest-assured.version>
     <lombok.version>1.18.4</lombok.version>
-    <spring.version>5.1.1.RELEASE</spring.version>
     <ramlfiles_path>${basedir}/ramls</ramlfiles_path>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -40,22 +39,6 @@
       <groupId>org.folio</groupId>
       <artifactId>folio-di-support</artifactId>
       <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <version>${spring.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>

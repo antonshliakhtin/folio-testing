@@ -5,11 +5,17 @@ import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.serviceproxy.ServiceBinder;
 import org.folio.rest.resource.interfaces.InitAPI;
+import org.folio.service.BookService;
 import org.folio.spring.SpringContextUtil;
 import org.folio.spring.config.ApplicationConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class InitAPIs implements InitAPI {
+public class InitAPIImpl implements InitAPI {
+
+  @Autowired
+  private BookService bookService;
 
   @Override
   public void init(Vertx vertx, Context context, Handler<AsyncResult<Boolean>> handler) {
@@ -18,6 +24,10 @@ public class InitAPIs implements InitAPI {
     vertx.executeBlocking(
       future -> {
         SpringContextUtil.init(vertx, context, ApplicationConfig.class);
+        SpringContextUtil.autowireDependencies(this, context);
+        new ServiceBinder(vertx)
+          .setAddress("book-service.queue")
+          .register(BookService.class, bookService);
         future.complete();
       },
       result -> {
@@ -27,13 +37,5 @@ public class InitAPIs implements InitAPI {
           handler.handle(Future.failedFuture(result.cause()));
         }
       });
-
-//    try {
-//      System.out.println("Book Shop");
-//      handler.handle(io.vertx.core.Future.succeededFuture(true));
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//      handler.handle(io.vertx.core.Future.failedFuture(e.getMessage()));
-//    }
   }
 }
