@@ -94,48 +94,6 @@ public class BooksImpl implements Books {
 
   }
 
-  @Override
-  @Validate
-  public void getBooksAuthorById(String id, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    log.debug("getBooksAuthorById");
-
-  }
-
-  @Override
-  @Validate
-  public void getBooksTitleById(String id, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    log.debug("getBooksTitleById");
-
-  }
-
-  @Override
-  @Validate
-  public void getBooksByBookTitle(String bookTitle, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    log.debug("getBooksByBookTitle");
-
-  }
-
-  @Override
-  @Validate
-  public void putBooksByBookTitle(String bookTitle, String accessToken, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    log.debug("putBooksByBookTitle");
-
-  }
-
-  @Override
-  @Validate
-  public void getBooksByAuthorName(String authorName, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    log.debug("getBooksByAuthorName");
-
-  }
-
-  @Override
-  @Validate
-  public void putBooksByAuthorName(String authorName, String accessToken, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    log.debug("putBooksByAuthorName");
-
-  }
-
   private Function<Book, Response> handleSuccessfulPost() {
     return book ->
       PostBooksResponse.respond201WithApplicationJson(book,
