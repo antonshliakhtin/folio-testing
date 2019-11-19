@@ -14,16 +14,6 @@ types:
   booksCollection: !include types/books/booksCollection.json
   errors: !include raml-util/schemas/errors.schema
 
-traits:
-  validate: !include raml-util/traits/validation.raml
-  language: !include raml-util/traits/language.raml
-  pageable: !include raml-util/traits/pageable.raml
-  searchable: !include raml-util/traits/searchable.raml
-
-#resourceTypes:
-#  collection: !include raml-util/rtypes/collection.raml
-#  collection-item: !include raml-util/rtypes/item-collection.raml
-
 /books:
   displayName: Books
   description: Books collection
@@ -88,24 +78,6 @@ traits:
         default: 10
         minimum: 0
         maximum: 2147483647
-#      title:
-#        displayName: Title
-#        type: string
-#        description: The books title
-#        example: Java for education
-#        required: false
-#      year:
-#        displayName: Year
-#        type: string
-#        description: The year released for the first time
-#        example: 22.01.1998
-#        required: false
-#      author:
-#        displayName: Author
-#        type: string
-#        description: An author's full name
-#        example: Anton Shliakhtin
-#        required: false
     responses:
       200:
         description: "Success"
@@ -200,34 +172,6 @@ traits:
           required: true
 
     delete:
-      queryParameters:
-        access_token:
-          displayName: Access Token
-          type: string
-          description: Token giving you permission to make call
-          required: true
-    /author:
-
-      get:
-    /title:
-
-      get:
-  /{bookTitle}:
-
-    get:
-
-    put:
-      queryParameters:
-        access_token:
-          displayName: Access Token
-          type: string
-          description: Token giving you permission to make call
-          required: true
-  /{authorName}:
-
-    get:
-
-    put:
       queryParameters:
         access_token:
           displayName: Access Token
