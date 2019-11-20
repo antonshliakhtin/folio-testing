@@ -24,10 +24,9 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
-  public Future<Book> addBook(Book book, OkapiParams okapiParams) {
+  public Future<Book> saveBook(Book book, OkapiParams okapiParams) {
     log.debug("Removing unsafe tags");
-
-    return null;
+    return repository.save(book, okapiParams.getTenant());
   }
 
   @Override

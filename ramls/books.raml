@@ -50,6 +50,14 @@ types:
                     "title": "Java for education"
                   }
               }
+      400:
+        description: "error"
+        body:
+          text/plain:
+      500:
+        description: "error"
+        body:
+          text/plain:
 
   get:
     displayName: Books
@@ -103,6 +111,7 @@ types:
       400:
         description: "Bad request"
         body:
+#          text/plain:
           application/json:
             example: |
               "unable to list booksCollection -- malformed parameter 'query', syntax error at column 99"

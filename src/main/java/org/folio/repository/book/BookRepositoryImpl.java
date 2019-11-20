@@ -22,8 +22,10 @@ import java.util.UUID;
 @Component
 public class BookRepositoryImpl implements BookRepository {
 
-  private static final String BOOK_TABLE = "book_data";
+  private static final String BOOK_TABLE = "books";
+
   private final Logger log = LoggerFactory.getLogger(BookRepositoryImpl.class);
+
   private Vertx vertx;
 
   @Autowired

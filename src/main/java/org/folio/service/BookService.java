@@ -9,7 +9,7 @@ public interface BookService {
 
   Future<BooksCollection> getBooks(String query, int offset, int limit, String tenantId);
 
-  Future<Book> addBook(Book book, OkapiParams okapiParams);
+  Future<Book> saveBook(Book book, OkapiParams okapiParams);
 
   Future<Book> getOneBook(String id, String tenantId);
 
