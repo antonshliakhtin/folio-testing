@@ -41,5 +41,6 @@ public class BookServiceImpl implements BookService {
   @Override
   public Future<Void> updateBook(String id, Book book, OkapiParams okapiParams) {
     return null;
+//    return repository.update(id, book, okapiParams.getTenant());
   }
 }
