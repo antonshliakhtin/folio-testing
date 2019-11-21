@@ -10,6 +10,7 @@ import org.folio.common.OkapiParams;
 import org.folio.rest.annotations.Validate;
 import org.folio.rest.jaxrs.model.Book;
 import org.folio.rest.jaxrs.resource.Books;
+import org.folio.rest.tools.utils.TenantTool;
 import org.folio.service.BookService;
 import org.folio.spring.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,22 @@ public class BooksImpl implements Books {
   @Validate
   public void getBooks(String query, int offset, int limits, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
     log.debug("getBooks");
+
+    succeededFuture()
+      .compose(o -> bookService.getBooks(query, offset, limits, TenantTool.tenantId(okapiHeaders)))
+      .map(books -> {
+        asyncResultHandler.handle(succeededFuture(GetBooksResponse.respond200WithApplicationJson(books)));
+        return null;
+      })
+      .otherwise(exception -> {
+        if (exception instanceof NotFoundException || exception instanceof NotAuthorizedException ||
+          exception instanceof BadRequestException) {
+          asyncResultHandler.handle(succeededFuture(PostBooksResponse.respond400WithTextPlain(exception.getMessage())));
+        } else {
+          asyncResultHandler.handle(succeededFuture(PostBooksResponse.respond500WithTextPlain(exception.getMessage())));
+        }
+        return null;
+      });
   }
 
   @Override
