@@ -20,7 +20,6 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.util.Map;
-import java.util.function.Function;
 
 import static io.vertx.core.Future.succeededFuture;
 
@@ -40,8 +39,6 @@ public class BooksImpl implements Books {
   @Override
   @Validate
   public void getBooks(String query, int offset, int limits, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    log.debug("getBooks");
-
     succeededFuture()
       .compose(o -> bookService.getBooks(query, offset, limits, TenantTool.tenantId(okapiHeaders)))
       .map(books -> {
@@ -62,14 +59,11 @@ public class BooksImpl implements Books {
   @Override
   @Validate
   public void postBooks(Book book, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    log.debug("postBooks");
-
     succeededFuture()
       .compose(o -> bookService.saveBook(book, new OkapiParams(okapiHeaders)))
       .map(newBook -> {
         asyncResultHandler.handle(
-          succeededFuture(PostBooksResponse.respond201WithApplicationJson(newBook, PostBooksResponse.headersFor201()))
-        );
+          succeededFuture(PostBooksResponse.respond201WithApplicationJson(newBook, PostBooksResponse.headersFor201())));
         return null;
       })
       .otherwise(exception -> {
@@ -83,9 +77,26 @@ public class BooksImpl implements Books {
       });
   }
 
-  private Function<Book, Response> handleSuccessfulPost() {
-    return book ->
-      PostBooksResponse.respond201WithApplicationJson(book,
-        PostBooksResponse.headersFor201().withLocation(LOCATION_PREFIX + book.getId()));
+  @Override
+  public void getBooksById(String id, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    succeededFuture()
+      .compose(o -> bookService.getOneBook(id, TenantTool.tenantId(okapiHeaders)))
+      .map(oneBook -> {
+        asyncResultHandler.handle(
+          succeededFuture(GetBooksByIdResponse.respond200WithApplicationJson(oneBook)));
+        return null;
+      })
+      .otherwise(exception -> {
+        if (exception instanceof BadRequestException) {
+          asyncResultHandler.handle(succeededFuture(GetBooksByIdResponse.respond400WithApplicationJson(exception.getMessage())));
+        } else if (exception instanceof NotAuthorizedException) {
+          asyncResultHandler.handle(succeededFuture(GetBooksByIdResponse.respond401WithApplicationJson(exception.getMessage())));
+        } else if (exception instanceof NotFoundException) {
+          asyncResultHandler.handle(succeededFuture(GetBooksByIdResponse.respond404WithApplicationJson(exception.getMessage())));
+        } else {
+          asyncResultHandler.handle(succeededFuture(GetBooksByIdResponse.respond500WithApplicationJson(exception.getMessage())));
+        }
+        return null;
+      });
   }
 }

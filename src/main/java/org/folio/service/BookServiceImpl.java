@@ -25,7 +25,6 @@ public class BookServiceImpl implements BookService {
 
   @Override
   public Future<Book> saveBook(Book book, OkapiParams okapiParams) {
-    log.debug("Removing unsafe tags");
     return repository.save(book, okapiParams.getTenant());
   }
 
