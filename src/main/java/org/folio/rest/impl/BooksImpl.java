@@ -2,7 +2,6 @@ package org.folio.rest.impl;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
-import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
@@ -48,12 +47,16 @@ public class BooksImpl implements Books {
   public void postBooks(Book book, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
     log.debug("postBooks");
 
-    Future<Book> future = succeededFuture();
-    future.compose(o -> bookService.saveBook(book, new OkapiParams(okapiHeaders)))
-      .map(PostBooksResponse::respond200WithApplicationJson)
+    succeededFuture()
+      .compose(o -> bookService.saveBook(book, new OkapiParams(okapiHeaders)))
+      .map(newBook -> {
+        asyncResultHandler.handle(
+          succeededFuture(PostBooksResponse.respond201WithApplicationJson(newBook, PostBooksResponse.headersFor201()))
+        );
+        return null;
+      })
       .otherwise(exception -> {
         if (exception instanceof NotFoundException || exception instanceof NotAuthorizedException ||
-          exception instanceof IllegalArgumentException || exception instanceof IllegalStateException ||
           exception instanceof BadRequestException) {
           asyncResultHandler.handle(succeededFuture(PostBooksResponse.respond400WithTextPlain(exception.getMessage())));
         } else {
