@@ -4,6 +4,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.ext.sql.UpdateResult;
 import org.apache.commons.lang3.StringUtils;
 import org.folio.db.CqlQuery;
 import org.folio.rest.jaxrs.model.Book;
@@ -71,7 +72,42 @@ public class BookRepositoryImpl implements BookRepository {
   }
 
   @Override
-  public Future<BooksCollection> getAll(String cqlQuery, int offset, int limit, String tenantId) {
+  public Future<Void> update(String id, Book book, String tenantId) {
+    log.debug("id -> " + id + ", book -> " + book);
+
+    Future<UpdateResult> future = Future.future();
+
+    PostgresClient.getInstance(vertx, tenantId)
+      .update(BOOK_TABLE, book, id, future);
+
+    return future
+      .map(updateResult -> {
+        if (updateResult.getUpdated() == 0) {
+          throw new NotFoundException("Book with id " + id + " does not exist");
+        }
+        return null;
+      });
+  }
+
+  @Override
+  public Future<Void> delete(String id, String tenantId) {
+    log.debug("id -> " + id);
+
+    Future<UpdateResult> future = Future.future();
+
+    PostgresClient.getInstance(vertx, tenantId)
+      .delete(BOOK_TABLE, id, future);
+
+    return future.map(updateResult -> {
+      if(updateResult.getUpdated() == 0){
+        throw new NotFoundException("Note with id " + id + " does not exist");
+      }
+      return null;
+    });
+  }
+
+  @Override
+  public Future<BooksCollection> getByQuery(String cqlQuery, int offset, int limit, String tenantId) {
     log.debug("Getting books. new query:" + cqlQuery);
 
     CqlQuery<Book> q = new CqlQuery<>(PostgresClient.getInstance(vertx, tenantId), BOOK_TABLE, Book.class);

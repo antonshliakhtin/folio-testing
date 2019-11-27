@@ -20,11 +20,11 @@ public class BookServiceImpl implements BookService {
 
   @Override
   public Future<BooksCollection> getBooks(String query, int offset, int limit, String tenantId) {
-    return repository.getAll(query, offset, limit, tenantId);
+    return repository.getByQuery(query, offset, limit, tenantId);
   }
 
   @Override
-  public Future<Book> saveBook(Book book, OkapiParams okapiParams) {
+  public Future<Book> addBook(Book book, OkapiParams okapiParams) {
     return repository.save(book, okapiParams.getTenant());
   }
 
@@ -35,12 +35,11 @@ public class BookServiceImpl implements BookService {
 
   @Override
   public Future<Void> deleteBook(String id, String tenantId) {
-    return null;
+    return repository.delete(id, tenantId);
   }
 
   @Override
   public Future<Void> updateBook(String id, Book book, OkapiParams okapiParams) {
-    return null;
-//    return repository.update(id, book, okapiParams.getTenant());
+    return repository.update(id, book, okapiParams.getTenant());
   }
 }

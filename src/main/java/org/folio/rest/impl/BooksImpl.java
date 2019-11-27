@@ -61,10 +61,9 @@ public class BooksImpl implements Books {
   @Validate
   public void postBooks(Book book, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
     succeededFuture()
-      .compose(o -> bookService.saveBook(book, new OkapiParams(okapiHeaders)))
+      .compose(o -> bookService.addBook(book, new OkapiParams(okapiHeaders)))
       .map(newBook -> {
-        asyncResultHandler.handle(
-          succeededFuture(PostBooksResponse.respond201WithApplicationJson(newBook, PostBooksResponse.headersFor201())));
+        asyncResultHandler.handle(succeededFuture(PostBooksResponse.respond201WithApplicationJson(newBook, PostBooksResponse.headersFor201())));
         return null;
       })
       .otherwise(exception -> {
@@ -84,8 +83,7 @@ public class BooksImpl implements Books {
     succeededFuture()
       .compose(o -> bookService.getOneBook(id, TenantTool.tenantId(okapiHeaders)))
       .map(oneBook -> {
-        asyncResultHandler.handle(
-          succeededFuture(GetBooksByIdResponse.respond200WithApplicationJson(oneBook)));
+        asyncResultHandler.handle(succeededFuture(GetBooksByIdResponse.respond200WithApplicationJson(oneBook)));
         return null;
       })
       .otherwise(exception -> {
@@ -107,8 +105,7 @@ public class BooksImpl implements Books {
     succeededFuture()
       .compose(o -> bookService.updateBook(id, book, new OkapiParams(okapiHeaders)))
       .map(updatedBook -> {
-        asyncResultHandler.handle(
-          succeededFuture(PutBooksByIdResponse.respond201WithApplicationJson(updatedBook)));
+        asyncResultHandler.handle(succeededFuture(PutBooksByIdResponse.respond201WithApplicationJson(updatedBook)));
         return null;
       })
       .otherwise(exception -> {
@@ -127,6 +124,23 @@ public class BooksImpl implements Books {
 
   @Override
   public void deleteBooksById(String id, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-
+    succeededFuture()
+      .compose(o -> bookService.deleteBook(id, TenantTool.tenantId(okapiHeaders)))
+      .map(deletedBook -> {
+        asyncResultHandler.handle(succeededFuture(DeleteBooksByIdResponse.respond204WithApplicationJson(deletedBook)));
+        return null;
+      })
+      .otherwise(exception -> {
+        if (exception instanceof BadRequestException) {
+          asyncResultHandler.handle(succeededFuture(DeleteBooksByIdResponse.respond400WithApplicationJson(exception.getMessage())));
+        } else if (exception instanceof NotAuthorizedException) {
+          asyncResultHandler.handle(succeededFuture(DeleteBooksByIdResponse.respond401WithApplicationJson(exception.getMessage())));
+        } else if (exception instanceof NotFoundException) {
+          asyncResultHandler.handle(succeededFuture(DeleteBooksByIdResponse.respond404WithApplicationJson(exception.getMessage())));
+        } else {
+          asyncResultHandler.handle(succeededFuture(DeleteBooksByIdResponse.respond500WithApplicationJson(exception.getMessage())));
+        }
+        return null;
+      });
   }
 }

@@ -10,5 +10,9 @@ public interface BookRepository {
 
   Future<Book> findOne(String id, String tenantId);
 
-  Future<BooksCollection> getAll(String cqlQuery, int offset, int limit, String tenantId);
+  Future<BooksCollection> getByQuery(String cqlQuery, int offset, int limit, String tenantId);
+
+  Future<Void> update(String id, Book book, String tenantId);
+
+  Future<Void> delete(String id, String tenantId);
 }
